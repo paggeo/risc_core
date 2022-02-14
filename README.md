@@ -10,15 +10,15 @@ This is meant to be done first in C then in a hardare description language
 
 ## Things to implement
 - [x] Float Point Unit (Fpu) 
-  Has to do fadd, fmult,mmult(matrix multiplication) to 32 bit IEEE float
+  - Has to do fadd, fmult,mmult(matrix multiplication) to 32 bit IEEE float
 - [ ] ALU 
-  Has to do add, sub, and, or, not, xor, mul
+  - Has to do add, sub, and, or, not, xor, mul
 - [ ] Base instruction set
 - [ ] Pipeline
 - [ ] Out-of-order with ROB
 - [ ] Multiplication and Division (M extension)
 - [ ] Atomic instructions (A extension)
-      As a start not multithread or multicore yet.
+  - As a start not multithread or multicore yet.
 - [ ] Floationg point Signle-Precision (F extension)
 - [ ] Vector Operators ( V extension) 
 
