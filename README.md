@@ -27,3 +27,4 @@ This is meant to be done first in C then in a hardare description language
 - DMA
 - Transactional Memory
 
+## Take from [Risc-V documentation](https://riscv.org/wp-content/uploads/2017/05/riscv-spec-v2.2.pdf)
