@@ -48,17 +48,18 @@ int fp_add(int a, int b){
   uint32_t ma_norm = NormM(ma);
   uint32_t mb_norm = NormM(mb);
 
-  printBits(sizeof(ma),&ma);
-  printBits(sizeof(ma_norm),&ma_norm);
   if (shifting == 0) {
       int mc_norm = ma_norm + mb_norm;
       int mc = M(mc_norm);
       printf("    Sign : %d\n",0);
-      printf("Exponent : %d\n",E(a));
+      printf("Exponent : %d\n",ea+eb);
       printf("Mantissa : %d\n",mc);
   }
   else if (shifting > 0) {
+      printf("ok\n");
+      printBits(sizeof(mb_norm),&mb_norm);
       mb_norm = mb_norm >> shifting;
+      printBits(sizeof(mb_norm),&mb_norm);
       int mc_norm = ma_norm + mb_norm;
       int mc = M(mc_norm);
       printf("    Sign : %d\n",0);
@@ -68,7 +69,6 @@ int fp_add(int a, int b){
   }
   else if (shifting < 0) {
       ma_norm = ma_norm >>abs(shifting);
-      printf("%d\n",abs(shifting));
       printBits(sizeof(ma_norm),&ma_norm);
       int mc_norm = ma_norm + mb_norm;
       printBits(sizeof(mc_norm),&mc_norm);
@@ -86,16 +86,16 @@ int fp_mult(int a,int b){
 }
 
 int main(){
-  float a = 1.6;
-  float b = 0.6;
-  float c = a*b;
+  float a = 9.75;
+  float b = 0.5625;
+  float c = a+b;
   
   int fa = *(uint32_t*)(&a);
   int fb = *(uint32_t*)(&b);
   int fc = *(uint64_t*)(&c);
-  /* fp_print(fa); */
-  /* fp_print(fb); */
-  /* fp_print(fc); */
+  fp_print(fa);
+  fp_print(fb);
+  fp_print(fc);
   fc = fp_add(fa,fb);
   /* printf("%d\n",fc); */
 }
