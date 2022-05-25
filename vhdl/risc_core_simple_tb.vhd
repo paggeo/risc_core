@@ -7,6 +7,9 @@ use ieee.std_logic_textio.all;
 library std;
 use std.textio.all;
 
+library work;
+use work.common.all;
+
 entity risc_v_core_simple_tb is 
 end entity;
 
@@ -16,16 +19,14 @@ architecture testbench of risc_v_core_simple_tb is
   -----------------------------------------------------------------------
   -- Component
   -----------------------------------------------------------------------
-    component risc_v_core_simple
-        port (
-            clock : in std_logic;
-            reset : in std_logic;
-            -- instruction : in std_logic_vector(31 downto 0 );
-            adder_1 : in std_logic_vector(3 downto 0);
-            adder_2 : in std_logic_vector(3 downto 0);
-            output_adder : out std_logic_vector(3 downto 0)
-        );
-    end component;
+ component risc_v_core_simple is
+	 port (
+		 clock : in std_logic;
+		 reset : in std_logic;
+		 instruction : in std_logic_vector(XLEN-1 downto 0 );
+		 pc : out std_logic_vector(XLEN-1 downto 0)
+	 );
+ end component;
 
   -----------------------------------------------------------------------
   -- Timing constants
@@ -38,54 +39,36 @@ architecture testbench of risc_v_core_simple_tb is
 
   -- General signals
   signal clock                        : std_logic := '0';  -- the master clock
-  signal reset                        : std_logic := '0';  -- the master clock
+  signal reset                        : std_logic := '0';  -- reset point
 
 
   -- Input signals 
-  signal   adder_1 : std_logic_vector(3 downto 0);
-  signal   adder_2 : std_logic_vector(3 downto 0);
+	signal instruction : std_logic_vector(XLEN-1 downto 0);
 
   -- Output signals 
-  signal   output_adder : std_logic_vector(3 downto 0);
-  type adder_inputs is record
-    adder_1 : std_logic_vector(3 downto 0);
-    adder_2 : std_logic_vector(3 downto 0);
-  end record;
-  type adder_array is array (0 to 7) of adder_inputs;
+	signal pc : std_logic_vector(XLEN-1 downto 0);
+	-- Input testbench
+     type instruction_ram is array (0 to 7) of std_logic_vector(XLEN-1 downto 0);
 
   -----------------------------------------------------------------------
   -- Function to generate custom input_data
-  function custom_ip_table return adder_array is
-    variable result : adder_array;
+  function custom_ip_table return instruction_ram is
+    variable result : instruction_ram;
     begin 
-        result(0).adder_1 := "0000";
-        result(0).adder_2 := "0000";
- 
-        result(1).adder_1 := "0001";
-        result(1).adder_2 := "0010";
- 
-        result(2).adder_1 := "0001";
-        result(2).adder_2 := "0011";
- 
-        result(3).adder_1 := "0101";
-        result(3).adder_2 := "0110";
- 
-        result(4).adder_1 := "1001";
-        result(4).adder_2 := "0010";
- 
-        result(5).adder_1 := "0100";
-        result(5).adder_2 := "0010";
- 
-        result(6).adder_1 := "1001";
-        result(6).adder_2 := "1010";
- 
-        result(7).adder_1 := "0100";
-        result(7).adder_2 := "0010";
+				result(0) := "00000000000000000000000000000000";
+				result(1) := "00000000000000000000000000000000";
+				result(2) := "00000000000000000000000000000000";
+				result(3) := "00000000000000000000000000000000";
+				result(4) := "00000000000000000000000000000000";
+				result(5) := "00000000000000000000000000000000";
+				result(6) := "00000000000000000000000000000000";
+				result(7) := "00000000000000000000000000000000";
+
         return result;
   end function custom_ip_table;  
 
   --- Fill custom input_data
-  constant IN_DATA : adder_array := custom_ip_table;
+  constant IN_DATA : instruction_ram := custom_ip_table;
   -- Save frame number 
   signal ip_frame : integer := 0;
   
@@ -94,9 +77,8 @@ architecture testbench of risc_v_core_simple_tb is
         port map(
             clock => clock,
             reset => reset,
-            adder_1 => adder_1,
-            adder_2 => adder_2,
-            output_adder => output_adder
+			instruction => instruction,
+            pc => pc
         );
     
   -----------------------------------------------------------------------
@@ -115,28 +97,21 @@ architecture testbench of risc_v_core_simple_tb is
   -----------------------------------------------------------------------
 
   simulation : process
-    procedure drive_sample ( data       : adder_inputs ) is
+    procedure drive_sample ( data      : std_logic_vector(XLEN-1 downto 0) ) is
     begin
-        adder_1 <= data.adder_1;
-        adder_2 <= data.adder_2;
+				instruction <= data;
     end procedure drive_sample;
     
-    procedure drive_ip ( data       : adder_array ) is
+    procedure drive_ip ( data       : instruction_ram ) is
         variable samples : integer;
         variable index   : integer;
-
-
     begin
     samples := data'length;
     index  := 0;
     while index < data'length loop
         drive_sample(data(index));
         ip_frame <= index;
-        
-        report "Entity: data_1=" & "0x"& to_hstring(data(index).adder_1);
-        report "Entity: data_2=" & "0x"& to_hstring(data(index).adder_2);
         index := index + 1;
-
         wait for TIME_DELAY;
     end loop;
 
