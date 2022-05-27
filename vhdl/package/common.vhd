@@ -20,7 +20,7 @@ package common is
     constant sb_second_imm_start : integer := 25;
     constant sb_second_imm_end : integer := 31;
 
-    constant uj_imm_start : integer := 25;
+    constant uj_imm_start : integer := 12;
     constant uj_imm_end : integer := 31;
     
 
@@ -45,6 +45,15 @@ package common is
     type sb_first_imm_vector is std_logic_vector(sb_first_imm_end-sb_first_imm_start downto 0);
     type sb_second_imm_vector is std_logic_vector(sb_second_imm_end-sb_second_imm_start downto 0);
     type uj_imm_vector is std_logic_vector(uj_imm_end-uj_imm_start downto 0);
+
+
+    -- Harvard Architecture
+    constant i_ram_size : integer := 50;
+    constant d_ram_size : integer := 50;
+    -- Instruction ram 
+    type instruction_ram is array(0 to i_ram_size) of std_logic_vector(XLEN-1 downto 0);
+    -- Data Ram 
+    type data_ram is array(0 to d_ram_size) of std_logic_vector(XLEN-1 downto 0);
     
 end package;
 
