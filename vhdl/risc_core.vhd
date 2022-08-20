@@ -59,6 +59,7 @@ architecture rtl of risc_v_core is
      --pc <= std_logic_vector(to_unsigned(x"80000000", XLEN));
      pc <= (others=>'0');
      registers <= (others=> (others=> '0'));
+     registers(6) <= (others=>'1');
     else 
     -- fetch  
     opcode <= instruction(opcode_end downto opcode_start);
@@ -137,6 +138,7 @@ architecture rtl of risc_v_core is
           d_ram(to_integer(unsigned(std_logic_vector(registers(irs1)) + std_logic_vector(resize(signed(std_logic_vector'(sb_second_imm & sb_first_imm)),XLEN))))) <= registers(irs2);
         when others => -- Wrong Op
       end case;
+
     when "0010011" => -- ADDI, SLTI, SLTIU, XORI, ORI, ANDI, SLLI, SRLI, SRAI
       case funct3 is 
         when "000" => -- ADDI
@@ -167,17 +169,19 @@ architecture rtl of risc_v_core is
             when "0000000" => -- SRLI
               registers(ird) <= std_logic_vector(unsigned(registers(irs1)) srl to_integer(unsigned(i_imm(4 downto 0))));
             when "0100000" => -- SRAI
-              registers(ird) <= std_logic_vector(unsigned(registers(irs1)) sra to_integer(unsigned(i_imm(4 downto 0))));
+              registers(ird) <= std_logic_vector(signed(registers(irs1)) sra to_integer(unsigned(i_imm(4 downto 0))));
             when others => -- Wrong Op
           end case;
         when others => -- Wrong Op
       end case;
+    
     when "0110011" => -- ADD, SUB, SLL, SLT, SLTU, XOR, SRL, SRA, OR, AND
       case funct3 is 
         when "000" => -- ADD, SUB
           case funct7 is 
             when "0000000" => -- ADD
               registers(ird) <= std_logic_vector(unsigned(registers(irs1)) + unsigned(registers(irs2)));
+              --registers(ird) <= (others=>'1');
             when "0100000" => -- SUB
               registers(ird) <= std_logic_vector(unsigned(registers(irs1)) - unsigned(registers(irs2)));
             when others => -- Wrong Op
@@ -203,15 +207,16 @@ architecture rtl of risc_v_core is
             when "0000000" => -- SRL 
               registers(ird) <= std_logic_vector(unsigned(registers(irs1)) srl to_integer(unsigned(registers(irs2)(4 downto 0))));
             when "0100000" => -- SRA
-              registers(ird) <= std_logic_vector(unsigned(registers(irs1)) srl to_integer(unsigned(registers(irs2)(4 downto 0))));
-              registers(ird) <= std_logic_vector(unsigned(registers(irs1)) sra to_integer(unsigned(registers(irs2)(4 downto 0))));
+              registers(ird) <= std_logic_vector(signed(registers(irs1)) sra to_integer(unsigned(registers(irs2)(4 downto 0))));
             when others => -- Wrong Op
           end case;
         when "110" => -- OR
           registers(ird) <= registers(irs1) or registers(irs2);
         when "111" => -- AND 
           registers(ird) <= registers(irs1) and registers(irs2);
+        when others => -- Wrong Op
       end case; 
+
     when "0001111" => -- FENCE 
     when "1110011" => -- ECALL, EBREAK
     when others => -- Wrong Op
