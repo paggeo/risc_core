@@ -4,6 +4,8 @@ A project to learn basics ideas of designing a chip from start.
 This is meant to be done first in C then in a hardare description language
 (Vhdl or Verilog) and the to run on a FPGA.
 
+## Need VHDL - 2008
+
 ## Test  
 To take the test from https://github.com/riscv-software-src/riscv-tests I changed the cross compiler 
 ## Basics ideas : 

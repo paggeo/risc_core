@@ -35,9 +35,9 @@ def replace(arr,start,string):
 	return arr
 	 
 def decode(instruction):
+	print(instruction)
 	ins = str(instruction).replace(',','').replace('\n','').replace('\t', '')
-	ins = ins.split(' ')
-	print(ins)
+	ins = ins.split()
 	arr = ['0'] *32
 	if (ins[0] == 'lui' or ins[0] == 'auipc' ): ## U-type
 	 print('U-type')
@@ -57,7 +57,6 @@ def decode(instruction):
 	return ''.join(str(e) for e in arr)
 	 
 if __name__ == '__main__' : 
-	print(regnames)
 	if not os.path.isdir('custom-isa-assembly'):
 		os.mkdir('custom-isa-assembly')
 	for x in glob.glob('custom-isa-tests/*'):
@@ -70,7 +69,7 @@ if __name__ == '__main__' :
 			for instruction in instructions: 
 				count += 1
 				byte_instruction = decode(instruction)
-				print(byte_instruction)
+				#print(byte_instruction)
 				#g.write(byte_instruction)	
 			print(f'#lines: \t{count}')
 
