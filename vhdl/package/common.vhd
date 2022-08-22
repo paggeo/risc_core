@@ -55,8 +55,25 @@ package common is
     -- Data Ram 
     type data_ram is array(0 to d_ram_size) of std_logic_vector(XLEN-1 downto 0);
     
+
+    function data_ram_fillup return data_ram;
+    --constant dram : data_ram := data_ram_fillup;
 end package;
 
 package body common is
+  function data_ram_fillup return data_ram is 
+    variable index : std_logic_vector(XLEN-1 downto 0) := (others=>'0');
+
+    variable ram : data_ram := (others=>(others=>'0'));
+
+    begin 
+      for ii in 0 to d_ram_size-1 loop
+        ram(ii) := index;
+        index := index + 1;
+      end loop;
+      ram(d_ram_size) := "11101110111111110111111101111111"; -- this is used for testing 
+
+      return ram;
+  end function;
 
 end package body common;

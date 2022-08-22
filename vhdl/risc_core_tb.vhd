@@ -114,9 +114,80 @@ architecture testbench of risc_v_core_tb is
         return result;
   end function test_register_register;  
 
+  function test_load_register return instruction_ram is
+    variable result : instruction_ram;
+    begin 
+        -- Is it compiler responsible for nops or the core must implement the stalling in the pipeline ?
+				result(0) := "000000001010" & "00000" & "000" & "00001" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lb x1, 10(x0) -- ram starts form 0x0 instead of 0x80000
+				result(1) := "000000001011" & "00000" & "000" & "00010" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lb x2, 11(x0) -- ram starts form 0x0 instead of 0x80000
+				result(2) := "000000000011" & "00001" & "000" & "00011" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lb x3, 3(x1) -- ram starts form 0x0 instead of 0x80000
+				result(2) := "000000110010" & "00000" & "000" & "00100" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lb x4, 50(x0) -- ram starts form 0x0 instead of 0x80000
+				result(3) := "000000110010" & "00000" & "100" & "00101" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lbu x5, 50(x0) -- ram starts form 0x0 instead of 0x80000
+				result(4) := "000000110010" & "00000" & "001" & "00110" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lh x6, 50(x0) -- ram starts form 0x0 instead of 0x80000
+				result(5) := "000000110010" & "00000" & "101" & "00111" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lhu x7, 50(x0) -- ram starts form 0x0 instead of 0x80000
+				result(6) := "000000110010" & "00000" & "010" & "01000" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lw x7, 50(x0) -- ram starts form 0x0 instead of 0x80000
+        return result;
+  end function test_load_register;  
+
+  function test_store_register return instruction_ram is
+    variable result : instruction_ram;
+    begin 
+        -- Is it compiler responsible for nops or the core must implement the stalling in the pipeline ?
+				result(0) := "000000000011" & "00000" & "000" & "00001" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lb x1, 3(x0) -- ram starts form 0x0 instead of 0x80000
+				result(1) := "000000001010" & "00001" & "000" & "00001" & "0010011"; -- imm(12) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- addi x1, x1 , 10 
+				result(2) := "0000000" & "00001" & "00000" & "000" & "01010" & "0100011"; -- imm(7) & rs2(5) & rs1(5) & funct3(3) & imm(5) & opcode(7)-- sb x1|rs2, 10(x0|rs1) -- ram starts form 0x0 instead of 0x80000
+				result(3) := "0000001" & "00001" & "00000" & "000" & "01010" & "0100011"; -- imm(7) & rs2(5) & rs1(5) & funct3(3) & imm(5) & opcode(7)-- sb x1|rs2, 42(x0|rs1) -- ram starts form 0x0 instead of 0x80000
+
+				result(4) := "000000001010" & "00001" & "000" & "00001" & "0010011"; -- imm(12) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- addi x1, x1 , 10 
+				result(5) := "0000000" & "00001" & "00000" & "000" & "01010" & "0100011"; -- imm(7) & rs2(5) & rs1(5) & funct3(3) & imm(5) & opcode(7)-- sb x1|rs2, 10(x0|rs1) -- ram starts form 0x0 instead of 0x80000
+				result(6) := "0000001" & "00001" & "00000" & "000" & "01010" & "0100011"; -- imm(7) & rs2(5) & rs1(5) & funct3(3) & imm(5) & opcode(7)-- sb x1|rs2, 42(x0|rs1) -- ram starts form 0x0 instead of 0x80000
+
+				result(7) := "0000000" & "00001" & "00000" & "001" & "01010" & "0100011"; -- imm(7) & rs2(5) & rs1(5) & funct3(3) & imm(5) & opcode(7)-- sh x1|rs2, 10(x0|rs1) -- ram starts form 0x0 instead of 0x80000
+				result(8) := "0000001" & "00001" & "00000" & "001" & "01010" & "0100011"; -- imm(7) & rs2(5) & rs1(5) & funct3(3) & imm(5) & opcode(7)-- sh x1|rs2, 42(x0|rs1) -- ram starts form 0x0 instead of 0x80000
+
+				result(9) := "0000000" & "00001" & "00000" & "010" & "01010" & "0100011"; -- imm(7) & rs2(5) & rs1(5) & funct3(3) & imm(5) & opcode(7)-- sw x1|rs2, 10(x0|rs1) -- ram starts form 0x0 instead of 0x80000
+				result(10) := "0000001" & "00001" & "00000" & "010" & "01010" & "0100011"; -- imm(7) & rs2(5) & rs1(5) & funct3(3) & imm(5) & opcode(7)-- sw x1|rs2, 42(x0|rs1) -- ram starts form 0x0 instead of 0x80000
+        
+        return result;
+  end function test_store_register;  
+
+  function test_branch_register return instruction_ram is
+    variable result : instruction_ram;
+    begin 
+        -- Is it compiler responsible for nops or the core must implement the stalling in the pipeline ?
+				result(0) := "000000000011" & "00000" & "000" & "00001" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lb x1, 3(x0) -- ram starts form 0x0 instead of 0x80000
+				result(1) := "000000001010" & "00001" & "000" & "00001" & "0010011"; -- imm(12) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- addi x1, x1 , 10 
+				result(2) := "000000001101" & "00010" & "000" & "00010" & "0010011"; -- imm(12) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- addi x2, x2 , 13 
+
+				result(3) := "0000001" & "00010" & "00001" & "000" & "10000" & "1100011"; -- imm(12|10:5) & rs2(5) & rs1(5) & funct3(3) & imm(4:1|11) & opcode(7)-- beq x1,x2, 0x30 (all jumps are relative pc+0x30)
+				result(4) := "000000000001" & "00010" & "000" & "00010" & "0010011"; -- imm(12) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- addi x2, x2 , 1 
+
+				result(5) := "0000001" & "00010" & "00001" & "001" & "10100" & "1100011"; -- imm(12|10:5) & rs2(5) & rs1(5) & funct3(3) & imm(4:1|11) & opcode(7)-- bne x1,x2, 0x34 (all jumps are relative pc+0x34)
+				result(6) := "1111111" & "00010" & "00001" & "001" & "11101" & "1100011"; -- imm(12|10:5) & rs2(5) & rs1(5) & funct3(3) & imm(4:1|11) & opcode(7)-- bne x1,x2, -4 (all jumps are relative pc+(-4)
+        
+        return result;
+  end function test_branch_register;  
+
+  function test_jump return instruction_ram is
+    variable result : instruction_ram;
+    begin 
+        -- Is it compiler responsible for nops or the core must implement the stalling in the pipeline ?
+				result(0) := "000000000011" & "00000" & "000" & "00001" & "0000011"; -- imm(12)|(memory offset) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- lb x1, 3(x0) -- ram starts form 0x0 instead of 0x80000
+				result(1) := "000000001010" & "00001" & "000" & "00001" & "0010011"; -- imm(12) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- addi x1, x1 , 10 
+
+				--result(2) := "000000001010" & "00001" & "000" & "00010" & "0010011"; -- imm(12) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- j, r2, 0x30
+				--result(3) := "000000001010" & "00001" & "000" & "00010" & "0010011"; -- imm(20) & rd(5) & opcode(7)-- jal, r2, -4
+				--result(3) := "000000001010" & "00001" & "000" & "00001" & "0010011"; -- imm(12) & rs1(5) & funct3(3) & rd(5) & opcode(7)-- addi x1, x1 , 10 
+        
+        return result;
+  end function test_jump;  
   --- Fill custom input_data
   --constant IN_DATA : instruction_ram := test_register_imm;
-  constant IN_DATA : instruction_ram := test_register_register;
+  --constant IN_DATA : instruction_ram := test_register_register;
+  --constant IN_DATA : instruction_ram := test_load_register;
+  --constant IN_DATA : instruction_ram := test_store_register;
+  --constant IN_DATA : instruction_ram := test_branch_register;
+  constant IN_DATA : instruction_ram := test_jump;
 
   -- Save frame number 
   signal ip_frame : integer := 0;
