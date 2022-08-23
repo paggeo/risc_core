@@ -160,6 +160,8 @@ architecture rtl of risc_v_core is
       registers(ird) <= std_logic_vector'(uj_imm & "000000000000");
       pc <= pc +4;
 
+    -- TODO: check  ld t1, 0(t1), ld t1, 2(t1), ld t1, 4(t1) -- memory is stored in bytes not 32 bits 
+    -- Not Crucial 
     when "0000011" => -- LB, LH, LW, LBU, LHU
       case funct3 is
         when "000" => -- LB
