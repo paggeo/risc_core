@@ -146,9 +146,9 @@ architecture rtl of risc_v_core is
         registers(ird) <= pc + 4 + std_logic_vector(resize(signed(std_logic_vector'(uj_imm(19) & uj_imm(7 downto 0) & uj_imm(8) & uj_imm(18 downto 9) & '0')),XLEN));
       end if;
     when "1100111" => -- JALR
-      pc <= signed(irs1)  + std_logic_vector(resize(signed(std_logic_vector'(i_imm)),XLEN));
+      --pc <= signed(irs1)  + std_logic_vector(resize(signed(std_logic_vector'(i_imm)),XLEN));
       if ird /= 0 then 
-        registers(ird) <= signed(irs1) + 4 + std_logic_vector(resize(signed(std_logic_vector'(i_imm)),XLEN));
+        --registers(ird) <= signed(irs1) + 4 + std_logic_vector(resize(signed(std_logic_vector'(i_imm)),XLEN));
       end if;
 
     -- test that seems correct

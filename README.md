@@ -5,6 +5,14 @@ This is meant to be done first in C then in a hardare description language
 (Vhdl or Verilog) and the to run on a FPGA.
 
 ## Need VHDL - 2008
+## __Assembler__
+This is a basic assembler to make me easily populate the core instructions. I opted to create 
+a one from scratch, and not a cross compiler, its simpler and allows for a more direct approach
+to combat specific problems. The cross compiler fill the case with some junk instructions for reset
+and for other reasons, not relevant to the problem. 
+
+My version does not support labels yet, so we can relative branch addresses to change the instruction 
+order.
 
 ## Test  
 To take the test from https://github.com/riscv-software-src/riscv-tests I changed the cross compiler 

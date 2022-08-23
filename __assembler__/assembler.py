@@ -262,7 +262,7 @@ def transform(ins):
   for i in ins: 
     b = transform_one_ins(i)
     b = b[::-1]
-    n = '_'.join(b)
+    n = ''.join(b)
     a.append(n)
   return a
     
@@ -292,6 +292,6 @@ if __name__ == "__main__":
         a.append(par[-2])
         ins.append(a)
   b = transform(ins)
-  for i in b:
-    print(i)
+  for i,bin_ins in enumerate(b):
+    print(f"result({i}) := \"{bin_ins}\";")
 

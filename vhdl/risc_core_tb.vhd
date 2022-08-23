@@ -181,13 +181,26 @@ architecture testbench of risc_v_core_tb is
         
         return result;
   end function test_jump;  
+
+  function test_add return instruction_ram is 
+    variable result: instruction_ram;
+    begin 
+      result(0) := "00000000000100000010000010000011";
+      result(1) := "00000000101000000010000100000011";
+      result(2) := "00000000001000001000000110110011";
+      result(3) := "01000000001000001000001000110011";
+      result(4) := "11111111111000101000001010010011";
+      result(5) := "00000000000000011010000110100011";
+      return result;
+    end function test_add;
   --- Fill custom input_data
   --constant IN_DATA : instruction_ram := test_register_imm;
   --constant IN_DATA : instruction_ram := test_register_register;
   --constant IN_DATA : instruction_ram := test_load_register;
   --constant IN_DATA : instruction_ram := test_store_register;
   --constant IN_DATA : instruction_ram := test_branch_register;
-  constant IN_DATA : instruction_ram := test_jump;
+  --constant IN_DATA : instruction_ram := test_jump;
+  constant IN_DATA : instruction_ram := test_add;
 
   -- Save frame number 
   signal ip_frame : integer := 0;
