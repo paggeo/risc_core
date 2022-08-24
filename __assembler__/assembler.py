@@ -201,6 +201,56 @@ def branch_ins(i,rd,rs1,rs2):
   bitwise.append(a[0] + a[2:8] )
   return bitwise
 
+def jal_ins(i,rd,rs1):
+  bitwise = []
+  bitwise.append("1101111")
+  tmp_rd = rd.replace('x','')
+  bitwise.append("{0:05b}".format(int(tmp_rd)))
+  a = bindigits(int(rs1),20)
+  bitwise.append(a[0]+a[10:20] + a[9] +  a[1:9] )
+  return bitwise
+
+def jalr_ins(i,rd,rs1,rs2):
+  bitwise = []
+  bitwise.append("1100111")
+  
+  tmp_rd = rd.replace('x','')
+  bitwise.append("{0:05b}".format(int(tmp_rd)))
+  
+  bitwise.append("000")
+  
+  tmp_rs1 = rs1.replace('x','')
+  bitwise.append("{0:05b}".format(int(tmp_rs1)))
+
+  a = bindigits(int(rs2),12)
+  bitwise.append(a)
+
+  return bitwise
+
+def lui_ins(i,rd,rs1):
+  bitwise = []
+  bitwise.append("0110111")
+  
+  tmp_rd = rd.replace('x','')
+  bitwise.append("{0:05b}".format(int(tmp_rd)))
+
+  a = bindigits(int(rs1),20)
+  bitwise.append(a)
+  
+  return bitwise
+
+def auipc_ins(i,rd,rs1):
+  bitwise = []
+  bitwise.append("0010111")
+  
+  tmp_rd = rd.replace('x','')
+  bitwise.append("{0:05b}".format(int(tmp_rd)))
+
+  a = bindigits(int(rs1),20)
+  bitwise.append(a)
+  
+  return bitwise
+  
 def __print_load__(bitwise):
   print('Load:\t Opcode:{:<10s} rd: {:<10s} funct3:{:<10s} rs1:{:<10s} imm:{:<10s}'.format(bitwise[0],bitwise[1],bitwise[2], bitwise[3], bitwise[4]))
 
@@ -219,6 +269,18 @@ def __print_reg__(bitwise):
 def __print_branch__(bitwise):
   print('Branch:\t Opcode:{:<10s} imm:{:<10s} funct3:{:<10s} rs1:{:<10s} rs2:{:<10s} imm:{:<10s} '.format(bitwise[0],bitwise[1],bitwise[2], bitwise[3], bitwise[4], bitwise[5]))
 
+def __print_jal__(bitwise):
+  print('Jal:\t Opcode:{:<10s} rd:{:<10s} imm:{:<10s} '.format(bitwise[0],bitwise[1],bitwise[2]))
+
+def __print_lui__(bitwise):
+  print('Lui:\t Opcode:{:<10s} rd:{:<10s} imm:{:<10s} '.format(bitwise[0],bitwise[1],bitwise[2]))
+
+def __print_auipc__(bitwise):
+  print('Auipc:\t Opcode:{:<10s} rd:{:<10s} imm:{:<10s} '.format(bitwise[0],bitwise[1],bitwise[2]))
+
+def __print_jalr__(bitwise):
+  print('Jalr:\t Opcode:{:<10s} rd:{:<10s} funct3:{:<10s} rs1:{:<10s} imm:{:<10s} '.format(bitwise[0],bitwise[1],bitwise[2],bitwise[3],bitwise[4]))
+
 def transform_one_ins(one_ins):
   bitwise = []
   load = ['lb','lh','lw','lbu','lhu']
@@ -226,6 +288,10 @@ def transform_one_ins(one_ins):
   imm = ['addi','slti','sltiu','xori','ori','andi', 'slli', 'srli', 'srai']
   reg = ['add','sub','sll','slt','sltu', 'xor', 'srl', 'sra', 'or', 'and']
   branch = ['beq','bne','blt','bge','bltu', 'bgeu']
+  jal = ['jal']
+  jalr = ['jalr']
+  auipc = ['auipc']
+  lui = ['lui']
 
   if len(one_ins) == 4 : 
     i = one_ins[0]
@@ -236,24 +302,42 @@ def transform_one_ins(one_ins):
     #print('Ins:{:<15s} Part1:{:<10s} Part2:{:<10s} Part3:{:<10s}'.format(i,rd,rs1,rs2))
     #if i== 'lb' or i== 'lh' or i== 'lw' or i== 'lbu' or i== 'lhu' : 
     if i in load:
-       bitwise = load_ins(i,rd,rs1,rs2) 
-       __print_load__(bitwise)
+      bitwise = load_ins(i,rd,rs1,rs2) 
+      __print_load__(bitwise)
 
     if i in store:
-       bitwise = store_ins(i,rd,rs1,rs2)
-       __print_store__(bitwise)
+      bitwise = store_ins(i,rd,rs1,rs2)
+      __print_store__(bitwise)
 
     if i in imm:
-       bitwise = imm_ins(i,rd,rs1,rs2)
-       __print_imm__(bitwise)
+      bitwise = imm_ins(i,rd,rs1,rs2)
+      __print_imm__(bitwise)
 
     if i in reg:
-       bitwise = reg_ins(i,rd,rs1,rs2)
-       __print_reg__(bitwise)
+      bitwise = reg_ins(i,rd,rs1,rs2)
+      __print_reg__(bitwise)
 
     if i in branch:
-       bitwise = branch_ins(i,rd,rs1,rs2)
-       __print_branch__(bitwise)
+      bitwise = branch_ins(i,rd,rs1,rs2)
+      __print_branch__(bitwise)
+    
+    if i in jalr:
+      bitwise = jalr_ins(i,rd,rs1,rs2)
+      __print_jalr__(bitwise)
+
+  if len(one_ins) == 3:
+    if one_ins[0] in jal:
+      bitwise = jal_ins(one_ins[0],one_ins[1],one_ins[2])
+      __print_jal__(bitwise)
+
+
+    if one_ins[0] in lui: 
+      bitwise = lui_ins(one_ins[0],one_ins[1],one_ins[2])
+      __print_lui__(bitwise)
+
+    if one_ins[0] in auipc: 
+      bitwise = auipc_ins(one_ins[0],one_ins[1],one_ins[2])
+      __print_auipc__(bitwise)
 
   return bitwise
 
