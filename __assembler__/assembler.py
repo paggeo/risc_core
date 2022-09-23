@@ -98,4 +98,4 @@ if __name__ == "__main__":
         ins.append(a)
   b = transform(ins)
   for i,bin_ins in enumerate(b):
-    print(f"result({i}) := \"{bin_ins}\";")
+    print(f"ram({i}) := \"{bin_ins}\";")

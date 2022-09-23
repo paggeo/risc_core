@@ -69,9 +69,7 @@ architecture rtl of risc_v_core_simple is
 
                   
                   
-                  -- Decode
-                  -- First "change pc"  instructions else pc <= pc + 4;
-                  -- TODO: Check negative jumps
+                  -- Decode - Execute - Memory
                   if (opcode = "1100011") then -- BEQ, BNE, BLT, BGE, BLTU, BGEU
                     if    (funct3 = "000") then -- BEQ
                       if(registers(to_integer(unsigned(rs1))) = registers(to_integer(unsigned(rs2)))) then 

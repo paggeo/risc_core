@@ -48,8 +48,8 @@ package common is
 
 
     -- Harvard Architecture
-    constant i_ram_size : integer := 50;
-    constant d_ram_size : integer := 50;
+    constant i_ram_size : integer := 15;
+    constant d_ram_size : integer := 15;
     -- Instruction ram 
     type instruction_ram is array(0 to i_ram_size) of std_logic_vector(XLEN-1 downto 0);
     -- Data Ram 
@@ -57,10 +57,33 @@ package common is
     
 
     function data_ram_fillup return data_ram;
+    function instruction_ram_fillup return instruction_ram;
+    function registers_fillup return reg_file;
     --constant dram : data_ram := data_ram_fillup;
 end package;
 
 package body common is
+  function instruction_ram_fillup return instruction_ram is 
+    variable ram : instruction_ram := (others=>(others=>'0'));
+    variable index: std_logic_vector(XLEN-1 downto 0) := (others=>'0');
+    begin 
+       ram(0) := "00000000001000001000000110110011";
+       ram(1) := "01000000000100010000001000110011";
+       ram(2) := "00000000010100010000001010010011";
+       --ram(2) := "00000000100000101010000100000011";
+    return ram;
+  end function;
+  
+  function registers_fillup return reg_file is 
+    variable registers : reg_file := (others=>(others=>'0'));
+    variable index: std_logic_vector(XLEN-1 downto 0) := (others=>'0');
+    begin 
+       registers(1) := "00000000000000000000000000000001";
+       registers(2) := "00000000000000000000000000000010";
+       registers(3) := "00000000000000000000000000000011";
+    return registers;
+  end function;
+
   function data_ram_fillup return data_ram is 
     variable index : std_logic_vector(XLEN-1 downto 0) := (others=>'0');
 
