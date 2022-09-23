@@ -39,7 +39,17 @@ rd  <= instruction(rd_end downto rd_start);
 rs1 <= instruction(rs1_end downto rs1_start);
 rs2 <= instruction(rs2_end downto rs2_start);
 
-c_alu <= funct7(5) & funct3 & opcode(5);
+   alu_process : process(opcode,funct3,funct7)
+   begin 
+    case opcode is 
+      when "0000011" =>
+         c_alu <= '0' & "000" & '0';
+      when "0100011" => 
+        c_alu <= '0' & "000" & '0';
+      when others => 
+        c_alu <= funct7(5) & funct3 & opcode(5);
+    end case;
+   end process;
 
   write_enable_process : process(opcode)
   begin 
@@ -69,8 +79,8 @@ c_alu <= funct7(5) & funct3 & opcode(5);
       c_memory_output_enable <= '1';
       c_read_memory_or_alu  <= "10";
     elsif opcode = "0100011" then 
-      c_memory_write_enable  <= '0';
-      c_memory_output_enable <= '1';
+      c_memory_write_enable  <= '1';
+      c_memory_output_enable <= '0';
       c_read_memory_or_alu  <= "10";
     else  
       c_memory_write_enable  <= '0';

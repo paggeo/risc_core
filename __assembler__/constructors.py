@@ -34,10 +34,10 @@ def store_ins(i,rd,rs1,rs2):
   if i == 'sw':
     bitwise.append("010")
 
-  tmp_rd = rd.replace('x','')
-  bitwise.append("{0:05b}".format(int(tmp_rd)))
   tmp_rs1 = rs1.replace('x','')
   bitwise.append("{0:05b}".format(int(tmp_rs1)))
+  tmp_rd = rd.replace('x','')
+  bitwise.append("{0:05b}".format(int(tmp_rd)))
   bitwise.append(a[:7])
 
   return bitwise

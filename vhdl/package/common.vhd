@@ -70,7 +70,9 @@ package body common is
        ram(0) := "00000000001000001000000110110011";
        ram(1) := "01000000000100010000001000110011";
        ram(2) := "00000000010100010000001010010011";
-       --ram(2) := "00000000100000101010000100000011";
+       ram(3) := "00000000010000101010001100000011";
+       ram(4) := "00000000010000000010000110000011";
+       ram(5) := "00000000011000000010001000100011";
     return ram;
   end function;
   
@@ -91,7 +93,7 @@ package body common is
 
     begin 
       for ii in 0 to d_ram_size-1 loop
-        ram(ii) := index;
+        ram(ii) := index + index;
         index := index + 1;
       end loop;
       ram(d_ram_size) := "11101110111111110111111101111111"; -- this is used for testing 
