@@ -4,3 +4,4 @@ addi x5, x2, 5
 lw x6, 4(x5)
 lw x3, 4(x0)
 sw x6, 4(x0)
+jal x15,-2

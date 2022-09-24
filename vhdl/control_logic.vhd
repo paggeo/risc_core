@@ -10,13 +10,16 @@ use work.common.all;
 entity control_logic is 
 port (
   instruction             : in std_logic_vector(XLEN-1 downto 0);
+  c_z                       : in std_logic;
   c_alu                   : out std_logic_vector(4 downto 0);
   c_write_enable          : out std_logic;
   c_reg_or_imm_or_sbimm   : out std_logic_vector(1 downto 0);
   c_memory_output_enable  : out std_logic;
   c_memory_write_enable   : out std_logic;
   c_memory_op_type        : out std_logic_vector(2 downto 0);
-  c_read_memory_or_alu      : out std_logic_vector(1 downto 0)
+  c_pc_select             : out std_logic_vector(1 downto 0);
+  c_branch_flag           : out std_logic_vector(2 downto 0);
+  c_read_memory_or_alu    : out std_logic_vector(1 downto 0)
 );
 end entity;
 
@@ -82,10 +85,26 @@ rs2 <= instruction(rs2_end downto rs2_start);
       c_memory_write_enable  <= '1';
       c_memory_output_enable <= '0';
       c_read_memory_or_alu  <= "10";
+    elsif opcode = "1100011" or opcode = "1101111" then -- Branch | Jump
+      c_memory_write_enable  <= '0';
+      c_memory_output_enable <= '0';
+      c_read_memory_or_alu  <= "00";
     else  
       c_memory_write_enable  <= '0';
       c_memory_output_enable <= '0';
       c_read_memory_or_alu  <= "01";
+    end if;
+  end process;
+ 
+  pc_select_process: process(c_z, opcode, funct3)
+  begin 
+    c_branch_flag <= funct3;
+    if opcode = "1100011" and c_z = '1' then 
+      c_pc_select <= "01";
+    elsif opcode = "1101111" then 
+      c_pc_select <= "10";
+    else 
+      c_pc_select <= "00";
     end if;
   end process;
 

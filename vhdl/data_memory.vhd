@@ -28,6 +28,7 @@ begin
   load_process : process(address,memory_output_enable)
   begin 
     --if rising_edge(clock) then 
+        if address < d_ram_size then 
         if memory_output_enable = '1' then 
           case memory_op_type is 
             when "000" => -- LB
@@ -45,12 +46,16 @@ begin
         else 
           read_data <= (others=>'0');
         end if;
+        else 
+            read_data <= (others=>'0');
+        end if;
     --end if;
   end process;
 
   store_process : process(memory_write_enable,write_data)
   begin 
     --if rising_edge(clock) then 
+      if address <= d_ram_size then 
       if memory_write_enable = '1' then 
         case memory_op_type is 
           when "000" => -- SB
@@ -61,7 +66,10 @@ begin
             data_memory(to_integer(unsigned(address))) <= write_data;
           when others=> -- Wrong Op
         end case;
-      else -- Do nothing 
+      else -- Do nothin
+        
+      end if;
+      else
       end if;
     --end if;
   end process;
