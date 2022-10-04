@@ -48,8 +48,8 @@ package common is
 
 
     -- Harvard Architecture
-    constant i_ram_size : integer := 15;
-    constant d_ram_size : integer := 15;
+    constant i_ram_size : integer := 25;
+    constant d_ram_size : integer := 25;
     -- Instruction ram 
     type instruction_ram is array(0 to i_ram_size) of std_logic_vector(XLEN-1 downto 0);
     -- Data Ram 
@@ -67,13 +67,15 @@ package body common is
     variable ram : instruction_ram := (others=>(others=>'0'));
     variable index: std_logic_vector(XLEN-1 downto 0) := (others=>'0');
     begin 
-       ram(0) := "00000000010100000010001000000011";
-       ram(1) := "00000000001000100000001010110011";
-       ram(2) := "00000000010100100000001010010011";
-       ram(3) := "00000000010100100000001100010011";
-       ram(4) := "00000000010100100000001110010011";
-       ram(5) := "00000000010100100000010000010011";
-       ram(6) := "00000000010100100000010010010011";
+ram(0) := "00000000010100000010001000000011";
+ram(1) := "00000000001000100000001010110011";
+ram(2) := "00000000010100100000001010010011";
+ram(3) := "00000000010100100000001100010011";
+ram(4) := "00000000010100100000001110010011";
+ram(5) := "00000000010100100000010000010011";
+ram(6) := "00000000010100100000010010010011";
+ram(7) := "00000000010100100000010100010011";
+ram(8) := "00000000011100000010000110100011";
     return ram;
   end function;
   

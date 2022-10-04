@@ -5,3 +5,5 @@ addi x6, x4, 5
 addi x7, x4, 5
 addi x8, x4, 5
 addi x9, x4, 5
+addi x10, x4, 5
+sw x7 , 3(x0)

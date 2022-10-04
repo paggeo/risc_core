@@ -59,7 +59,7 @@ begin
     reset <= '1';
     wait for TIME_DELAY;
     reset <= '0';
-    wait for 10*clock_period;
+    wait for 20*clock_period;
     reset <= '1';
     wait ;
   end process;

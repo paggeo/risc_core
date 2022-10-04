@@ -99,7 +99,7 @@ begin
   begin 
       if opcode_t(0) = "0110011" then -- reg
         c_reg_or_imm_or_sbimm <= "00";
-      elsif opcode = "0100011" then -- store
+      elsif opcode_t(0) = "0100011" then -- store
         c_reg_or_imm_or_sbimm <= "01";
       else  -- everything else -- Load
         c_reg_or_imm_or_sbimm <= "11";
