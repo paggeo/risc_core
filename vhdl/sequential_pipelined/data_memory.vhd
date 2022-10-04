@@ -25,7 +25,7 @@ architecture rtl of data_memory is
 signal data_memory        : data_ram := data_ram_fillup; -- Fill this
 
 begin
-  load_process : process(address,memory_output_enable)
+  load_process : process(clock)
   begin 
     if rising_edge(clock) then 
         if address < d_ram_size then 
@@ -52,7 +52,7 @@ begin
     end if;
   end process;
 
-  store_process : process(memory_write_enable,write_data)
+  store_process : process(clock)
   begin 
     if rising_edge(clock) then 
       if address <= d_ram_size then 

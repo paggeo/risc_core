@@ -6,7 +6,7 @@ use ieee.numeric_std.all;
 library work;
 use work.common.all;
 
-entity register_file is 
+entity register_file_b is 
 port(
   clock : in std_logic;
   reset : in std_logic;
@@ -23,7 +23,7 @@ port(
 end entity; 
 
 
-architecture rtl of register_file is 
+architecture rtl of register_file_b is 
 
 signal registers : reg_file := registers_fillup;
 

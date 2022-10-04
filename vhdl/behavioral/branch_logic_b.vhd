@@ -7,7 +7,7 @@ use ieee.numeric_std.all;
 library work;
 use work.common.all;
 
-entity branch_logic is
+entity branch_logic_b is
 port (
   clock : in std_logic;
   a     : in std_logic_vector(XLEN-1 downto 0);
@@ -17,7 +17,7 @@ port (
 );
 end entity;
 
-architecture rtl of branch_logic is 
+architecture rtl of branch_logic_b is 
 begin
 main : process(a,b,branch_flag)
 begin 

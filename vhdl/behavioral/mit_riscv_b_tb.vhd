@@ -7,15 +7,15 @@ use ieee.std_logic_textio.all;
 library work;
 use work.common.all;
 
-entity riscv_tb is 
+entity riscv_tb_b is 
 end entity; 
 
-architecture testbench of riscv_tb is 
+architecture testbench of riscv_tb_b is 
 
 -----------------------------------------------------------------------
 -- Component
 -----------------------------------------------------------------------
-component riscv is 
+component riscv_b is 
 port(
   clock: in std_logic;
   reset: in std_logic
@@ -37,7 +37,7 @@ signal reset                        : std_logic := '0';  -- reset point
 -- Save frame number 
 signal ip_frame : integer := 0;
 begin 
-	dut: riscv
+	dut: riscv_b
 		port map (
 		  clock => clock,
       reset => reset

@@ -7,15 +7,15 @@ use ieee.std_logic_textio.all;
 library work;
 use work.common.all;
 
-entity riscv_tb is 
+entity riscv_tb_b_b is 
 end entity; 
 
-architecture testbench of riscv_tb is 
+architecture testbench of riscv_tb_b_b is 
 
 -----------------------------------------------------------------------
 -- Component
 -----------------------------------------------------------------------
-component riscv is 
+component riscv_b_b is 
 port(
   clock: in std_logic;
   reset: in std_logic
@@ -37,7 +37,7 @@ signal reset                        : std_logic := '0';  -- reset point
 -- Save frame number 
 signal ip_frame : integer := 0;
 begin 
-	dut: riscv
+	dut: riscv_b_b
 		port map (
 		  clock => clock,
       reset => reset
@@ -55,7 +55,7 @@ begin
   
   simulation : process
   begin 
-    --wait for TIME_DELAY/2;
+    wait for TIME_DELAY/2;
     reset <= '1';
     wait for TIME_DELAY;
     reset <= '0';

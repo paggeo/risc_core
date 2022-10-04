@@ -7,7 +7,7 @@ use ieee.numeric_std.all;
 library work;
 use work.common.all;
 
-entity riscv is 
+entity riscv_b is 
 port(
   clock: in std_logic;
   reset: in std_logic
@@ -15,7 +15,7 @@ port(
 end entity;
 
 
-architecture rtl of riscv is 
+architecture rtl of riscv_b is 
 
 signal instruction_memory : instruction_ram := instruction_ram_fillup; -- Fill this 
 
@@ -26,7 +26,7 @@ signal out_instruction_memory : std_logic_vector(XLEN-1 downto 0) := (others=>'0
 signal alu_enable : std_logic_vector(5 downto 0);
 signal write_enable : std_logic ;
 
-component alu is 
+component alu_b is 
 port (
   clock : in std_logic;
   reg_or_imm : in std_logic; 
@@ -39,7 +39,7 @@ port (
 end component; 
 
 
-component register_file is 
+component register_file_b is 
 port(
   clock : in std_logic;
   reset : in std_logic;
@@ -54,7 +54,7 @@ port(
 );
 end component; 
 
-component control_logic is 
+component control_logic_b is 
 port (
   instruction    : in std_logic_vector(XLEN-1 downto 0);
   c_z              : in std_logic;
@@ -70,7 +70,7 @@ port (
 );
 end component;
 
-component data_memory is 
+component data_memory_b is 
 port(
   clock     : in std_logic;
   address   : in std_logic_vector(XLEN-1 downto 0);
@@ -82,7 +82,7 @@ port(
 );
 end component; 
 
-component branch_logic is
+component branch_logic_b is
 port (
   clock : in std_logic;
   a     : in std_logic_vector(XLEN-1 downto 0);
@@ -190,7 +190,7 @@ begin
   se_sb_first_second_imm <= std_logic_vector(resize(signed(std_logic_vector'(sb_second_imm(sb_second_imm'length-1) & sb_first_imm(0) & sb_second_imm(sb_second_imm'length-2 downto 0) & sb_first_imm(sb_first_imm'length-1 downto 1) & '0')),XLEN));
   se_uj_imm <=  std_logic_vector(resize(signed(std_logic_vector'(uj_imm(19) & uj_imm(7 downto 0) & uj_imm(8) & uj_imm(18 downto 9) & '0')),XLEN));
   
-  control_logic_module : control_logic
+  control_logic_module : control_logic_b
     port map(
       instruction     => out_instruction_memory,
       c_z             => c_z,
@@ -205,7 +205,7 @@ begin
       c_read_memory_or_alu  => c_read_memory_or_alu
     );
    
-  register_file_module : register_file
+  register_file_module : register_file_b
     port map(
       clock => clock, 
       reset => reset, 
@@ -218,7 +218,7 @@ begin
       write_data      => return_operand
     );
  
-    brach_logic_module : branch_logic
+    brach_logic_module : branch_logic_b
       port map(
         clock => clock, 
         a => rd1_t,
@@ -237,7 +237,7 @@ begin
       end case;
     end process;
  
-  alu_module : alu 
+  alu_module : alu_b
     port map(
       clock =>clock, 
       reg_or_imm => c_alu(0), 
@@ -248,7 +248,7 @@ begin
       c => alu_t 
     );
 
-  data_memory_module : data_memory
+  data_memory_module : data_memory_b
     port map(
       clock => clock,
       address => alu_t,

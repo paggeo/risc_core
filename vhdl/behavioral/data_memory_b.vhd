@@ -8,7 +8,7 @@ library work;
 use work.common.all;
 
 -- Careful we don't have pipeline yet
-entity data_memory is 
+entity data_memory_b is 
 port(
   clock     : in std_logic;
   address   : in std_logic_vector(XLEN-1 downto 0);
@@ -18,9 +18,9 @@ port(
   write_data            : in std_logic_vector(XLEN-1 downto 0);
   read_data             : out std_logic_vector(XLEN-1 downto 0)
 );
-end data_memory; 
+end data_memory_b; 
 
-architecture rtl of data_memory is 
+architecture rtl of data_memory_b is 
 
 signal data_memory        : data_ram := data_ram_fillup; -- Fill this
 

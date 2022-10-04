@@ -7,7 +7,7 @@ use ieee.numeric_std.all;
 library work;
 use work.common.all;
 
-entity control_logic is 
+entity control_logic_b is 
 port (
   instruction             : in std_logic_vector(XLEN-1 downto 0);
   c_z                       : in std_logic;
@@ -23,7 +23,7 @@ port (
 );
 end entity;
 
-architecture rtl of control_logic is 
+architecture rtl of control_logic_b is 
 
 signal      opcode : opcode_vector := (others=>'0');
 signal      funct3 : funct3_vector := (others=>'0');

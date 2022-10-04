@@ -1,7 +1,5 @@
-add x3, x1,x2
-sub x4, x2, x1
-addi x5, x2, 5
-lw x6, 4(x5)
-lw x3, 4(x0)
-sw x6, 4(x0)
-jal x15,-2
+add  x5, x1, x2
+addi x7, x5, 12
+addi x6, x1, 5
+addi x1, x4, 5
+addi x7, x5, 12

@@ -13,7 +13,7 @@ use work.common.all;
 -- ALU does not care
 
 -- Returns C a XLEN vector in 1 clock circle
-entity alu is 
+entity alu_b is 
 port (
   clock : in std_logic;
   -- I need this because reg_to_reg supports also sub
@@ -27,7 +27,7 @@ port (
 );
 end entity; 
 
-architecture rtl of alu is 
+architecture rtl of alu_b is 
 
 begin 
   alu_process : process(funct3,funct7,a,b,reg_or_imm)
