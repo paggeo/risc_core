@@ -76,7 +76,6 @@ begin
 
    alu_process : process(funct7_t,funct3_t,opcode_t)
    begin 
-    --if rising_edge(clock) then 
       case opcode_t(0) is 
         when "0000011" =>
            c_alu <= '0' & "000" & '0';
@@ -85,23 +84,19 @@ begin
         when others => 
           c_alu <= funct7_t(0)(5) & funct3_t(0) & opcode_t(0)(5);
       end case;
-    --end if;
    end process;
 
   write_enable_process : process(opcode_t)
   begin 
-    --if rising_edge(clock) then 
       if opcode_t(2) = "0100011" then --Store
         c_write_enable <= '0';
       else 
         c_write_enable <= '1';
       end if;
-    --end if;
   end process;
 
   reg_or_imm_process : process(opcode_t)
   begin 
-    --if rising_edge(clock) then
       if opcode_t(0) = "0110011" then -- reg
         c_reg_or_imm_or_sbimm <= "00";
       elsif opcode = "0100011" then -- store
@@ -109,46 +104,37 @@ begin
       else  -- everything else -- Load
         c_reg_or_imm_or_sbimm <= "11";
       end if;
-    --end if;
   end process;
 
   memory_enable : process(opcode_t,funct3_t)
   begin 
-    --if rising_edge(clock) then  
-      c_memory_op_type <= funct3_t(2);
-      if opcode_t(2) = "0000011" then 
+      c_memory_op_type <= funct3_t(1);
+      if opcode_t(1) = "0000011" then 
         c_memory_write_enable  <= '0';
         c_memory_output_enable <= '1';
-        c_read_memory_or_alu  <= "10";
-      elsif opcode_t(2) = "0100011" then 
+      elsif opcode_t(1) = "0100011" then 
         c_memory_write_enable  <= '1';
         c_memory_output_enable <= '0';
-        c_read_memory_or_alu  <= "10";
-      elsif opcode_t(2) = "1100011" or opcode_t(2) = "1101111" then -- Branch | Jump
+      elsif opcode_t(1) = "1100011" or opcode_t(1) = "1101111" then -- Branch | Jump
         c_memory_write_enable  <= '0';
         c_memory_output_enable <= '0';
-        c_read_memory_or_alu  <= "00";
       else  
         c_memory_write_enable  <= '0';
         c_memory_output_enable <= '0';
-        c_read_memory_or_alu  <= "01";
       end if;
-    --end if;
   end process;
 
   write_back_select : process(opcode_t)
   begin 
-    --if rising_edge(clock) then 
       if opcode_t(2) = "0000011" then 
         c_read_memory_or_alu  <= "10";
-      elsif opcode_t(3) = "0100011" then 
+      elsif opcode_t(2) = "0100011" then 
         c_read_memory_or_alu  <= "10";
-      elsif opcode_t(3) = "1100011" or opcode_t(2) = "1101111" then -- Branch | Jump
+      elsif opcode_t(2) = "1100011" or opcode_t(2) = "1101111" then -- Branch | Jump
         c_read_memory_or_alu  <= "00";
       else  
         c_read_memory_or_alu  <= "01";
       end if;
-    --end if;
   end process;
  
   pc_select_process: process(clock)

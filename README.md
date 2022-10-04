@@ -5,6 +5,7 @@ This is meant to be done first in C then in a hardare description language
 (Vhdl or Verilog) and the to run on a FPGA.
 
 ## Example 
+- Reg | IMM
 ```
 add  x5, x1, x2
 addi x7, x5, 12
@@ -15,6 +16,32 @@ addi x7, x5, 12
 
 Output image : 
 ![ALU_reg_imm](run_alu_reg_imm.png "run_alu_reg_imm")
+
+
+
+- Reg | IMM
+```
+lw x4, 5(x0)
+add x5, x4, x2
+addi x5, x4, 5
+addi x6, x4, 5
+addi x7, x4, 5
+```
+
+Output image : 
+![ALU_reg_imm](run_load_imm.png "run_alu_reg_imm")
+
+Output image :
+- We can see the problem that the pipelining has start but the data are not yet in place
+- X4 has become 10 when the x4 is reading from the register
+- The excecution is : 
+```
+x5 <= 0 + 2[x2] 
+x5 <= 0 + 5
+x6 <= 0 + 5
+x7 <= 10 + 5
+```
+![ALU_reg_imm](run_load_imm_closer.png "run_alu_reg_imm")
 
 ## Basics ideas : 
 - 32 bit processor that can handle demical, floating, vector operations
