@@ -137,12 +137,12 @@ begin
       end if;
   end process;
  
-  pc_select_process: process(clock)
+  pc_select_process: process(funct3_t,c_z,opcode_t)
   begin 
-    c_branch_flag <= funct3_t(2);
-    if opcode_t(2) = "1100011" and c_z = '1' then 
-      c_pc_select <= "01";
-    elsif opcode_t(2) = "1101111" then 
+    c_branch_flag <= funct3_t(1);
+    if opcode_t(0) = "1100011" and c_z = '1' then 
+      c_pc_select <= "01"; -- Take the branch
+    elsif opcode_t(0) = "1101111" then 
       c_pc_select <= "10";
     else 
       c_pc_select <= "00";

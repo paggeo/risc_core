@@ -180,7 +180,7 @@ begin
         --pc <= select_pc_operand ; -- Need to change it to pc <= pc+4;
         case c_pc_select is 
           when "00" => pc <= pc +1;
-          when "01" => pc <= pc + se_sb_first_second_imm;
+          when "01" => pc <= pc + se_sb_first_second_imm_2;
           when "10" => pc <= pc + se_uj_imm;
           when others => pc <= (others=>'1');
         end case;

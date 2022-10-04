@@ -19,9 +19,9 @@ end entity;
 
 architecture rtl of branch_logic is 
 begin
-main : process(clock)
+main : process(branch_flag,a, b)
 begin 
-  if rising_edge(clock) then 
+  --if rising_edge(clock) then 
     case branch_flag is 
       when "000" => -- BEQ
         if a = b then 
@@ -61,7 +61,7 @@ begin
         end if;
       when others => -- Wrong Op
     end case;
-  end if;
+  --end if;
 end process;
 
 end architecture;

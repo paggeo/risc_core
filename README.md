@@ -19,7 +19,7 @@ Output image :
 
 
 
-- Reg | IMM
+- Load
 ```
 lw x4, 5(x0)
 add x5, x4, x2
@@ -36,12 +36,69 @@ Output image :
 - X4 has become 10 when the x4 is reading from the register
 - The excecution is : 
 ```
-x5 <= 0 + 2[x2] 
+x5 <= 0 + 2{x2} 
 x5 <= 0 + 5
 x6 <= 0 + 5
 x7 <= 10 + 5
 ```
 ![ALU_reg_imm](run_load_imm_closer.png "run_alu_reg_imm")
+
+- Store
+```
+lw x4, 5(x0)
+add x5, x4, x2
+addi x5, x4, 5
+addi x6, x4, 5
+addi x7, x4, 5
+addi x8, x4, 5
+addi x9, x4, 5
+addi x10, x4, 5
+sw x7 , 3(x0)
+```
+
+Output image :
+- We can see the problem that the pipelining has start but the data are not yet in place
+- X0 + 3 memory address needs to wait for x7 to be stored in the memory and then start
+- The excecution is : 
+```
+x5 <= 0 + 2{x2} 
+x5 <= 0 + 5
+x6 <= 0 + 5
+x7 <= 10 + 5
+x8 <= 10 + 5
+x9 <= 10 + 5
+x10 <= 10 + 5
+[x0 + 3] <= 15{x7}
+```
+![ALU_reg_imm](run_store.png "run_alu_reg_imm")
+
+- Branch
+```
+add x4, x1, x2
+add x5, x1, x2
+add x7, x1, x2
+add x8, x1, x2
+add x8, x1, x2
+add x8, x1, x2
+beq x4,x5, -2
+```
+
+Output image :
+- We can see the problem that the pipelining has start but the data are not yet in place
+- We wait for the x4 and x5 to be filled and then run the branch
+- Carefull every branch is multiplied by 2 : ex. -2 => pc <= pc - 4
+- The excecution is : 
+```
+x4 <= 1{x1} + 2{x2} 
+x5 <= 1{x1} + 2{x2} 
+x6 <= 1{x1} + 2{x2} 
+x7 <= 1{x1} + 2{x2} 
+x8 <= 1{x1} + 2{x2} 
+x8 <= 1{x1} + 2{x2} 
+x8 <= 1{x1} + 2{x2} 
+if (x4 == x5) then pc <= pc - 4 else pc <= pc +1
+```
+![ALU_reg_imm](run_branch.png "run_alu_reg_imm")
 
 ## Basics ideas : 
 - 32 bit processor that can handle demical, floating, vector operations
