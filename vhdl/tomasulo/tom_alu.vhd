@@ -30,9 +30,9 @@ end entity;
 architecture rtl of alu is 
 
 begin 
-  alu_process : process(clock)
+  alu_process : process(reg_or_imm,funct3,funct7,a,b)
   begin 
-    if rising_edge(clock) then 
+    --if rising_edge(clock) then 
       case funct3 is 
         when "000" => -- ADDI | ADD , SUB
           if reg_or_imm = '0' then -- ADDI
@@ -76,7 +76,7 @@ begin
           end case;
         when others => -- Wrong OP
       end case;
-    end if;
+    --end if;
   end process;
     
 

@@ -7,7 +7,7 @@ use ieee.numeric_std.all;
 library work;
 use work.common.all;
 
--- Careful we don't have pipeline yet
+
 entity data_memory is 
 port(
   clock     : in std_logic;

@@ -112,6 +112,7 @@ if (x4 == x5) then pc <= pc - 4 else pc <= pc +1
   - Has to do add, sub, and, or, not, xor, mul
 - [x] Base instruction set
 - [x] Pipeline
+- [ ] Register Renaming Tomasulo
 - [ ] Out-of-order with ROB
 - [ ] Multiplication and Division (M extension)
 - [ ] Atomic instructions (A extension)

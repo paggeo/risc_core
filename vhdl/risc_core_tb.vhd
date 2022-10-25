@@ -48,7 +48,7 @@ architecture testbench of risc_v_core_tb is
   -- Output signals 
 	signal pc_out : std_logic_vector(XLEN-1 downto 0);
 	-- Input testbench
-     type instruction_ram is array (0 to 25) of std_logic_vector(XLEN-1 downto 0);
+  type instruction_ram is array (0 to 25) of std_logic_vector(XLEN-1 downto 0);
 
   -----------------------------------------------------------------------
   -- Function to generate custom input_data
@@ -208,10 +208,10 @@ architecture testbench of risc_v_core_tb is
   begin
     dut: risc_v_core
         port map(
-            clock => clock,
-            reset => reset,
+          clock => clock,
+          reset => reset,
       		instruction => instruction,
-            pc_out => pc_out
+          pc_out => pc_out
         );
     
   -----------------------------------------------------------------------
