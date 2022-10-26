@@ -7,6 +7,8 @@ use ieee.numeric_std.all;
 library work;
 use work.common.all;
 
+-- What happens when we dont have enought station 
+-- We need to stall
 entity reservation_station is 
 generic ( 
   width : integer := 3
@@ -35,6 +37,9 @@ port(
   op_out      : out opcode_vector;
   funct3_out  : out funct3_vector;
   funct7_out  : out funct7_vector;
+  -- Try to add destination to that to get straight to the register status 
+  position_in_rsa : out integer;
+
   valid_out   : out std_logic
   -- Here we need to say where we are in the register result status
 );
@@ -91,9 +96,11 @@ signal zeros : std_logic_vector(XLEN-1 downto 0):= (others=>'0');
 begin 
 
 main : process(clock)
+
 begin 
-  -- Store
+  -- Store -- This Bad 
   if rising_edge(clock) then 
+    position_in_rsa <= 0;
     if valid_in = '1' then 
       L1 : for i in 0 to width loop
         if rsa_t(i+1).busy = '0' then 
@@ -101,19 +108,35 @@ begin
           rsa_t(i+1).op <= op_in;
           rsa_t(i+1).funct3 <= funct3_in; 
           rsa_t(i+1).funct7 <= funct7_in;
-          rsa_t(i+1).sj.so <= rs1_s;
+          -- This is if the broadcasting happend in a time when we load the 
+          -- a new instruction
+          -- TODO: Check this 
+          if rs1_q = cdb_source_out then 
+            rsa_t(i+1).sj.so <= cdb_data_out;
+            rsa_t(i+1).sj.v <= '1';
+            rsa_t(i+1).qj <= (others=>'0'); 
+          else  
+            rsa_t(i+1).sj.so <= rs1_s;
+            rsa_t(i+1).sj.v <= rs1_v;
+            rsa_t(i+1).qj <= rs1_q;
+          end if; 
+          if rs2_q = cdb_source_out then 
+            rsa_t(i+1).sk.so <= cdb_data_out;
+            rsa_t(i+1).sk.v <= '1';
+            rsa_t(i+1).qk <= (others=>'0'); 
+          else 
+            rsa_t(i+1).sk.so <= rs2_s; 
+            rsa_t(i+1).sk.v <= rs2_v;
+            rsa_t(i+1).qk <= rs2_q;
+          end if; 
 
-          rsa_t(i+1).sj.v <= rs1_v;
-          rsa_t(i+1).sk.so <= rs2_s; 
-          rsa_t(i+1).sk.v <= rs2_v;
-   
-          rsa_t(i+1).qj <= rs1_q;
-          rsa_t(i+1).qk <= rs2_q;
+          position_in_rsa <= i+1;
           exit L1; -- This would fill up the reservation station from the top 
        end if;
      end loop L1; 
     end if;
-    -- Output
+    -- These can stay
+    -- Output 
     L2 : for i in 0 to width loop
     -- Maybe we can add a signal from alu to check if it is free - Sequetial logic again
       if rsa_t(i+1).sj.v = '1' and rsa_t(i+1).sk.v = '1' and rsa_t(i+1).qj = zeros and rsa_t(i+1).qk = zeros and rsa_t(i+1).busy = '1' then 
@@ -152,62 +175,5 @@ begin
     end if;
   end if;
 end process;
--- Stupid language can't understand multiple driven, all in one process
---  main : process(valid_in,op_in,funct3_in,funct7_in,rs1_s,rs1_v,rs2_s,rs2_v,rs1_q,rs2_q)
--- begin 
---   if valid_in = '1' then 
---     L1 : for i in 0 to width loop
---       if rsa_t(i+1).busy = '0' then 
---         rsa_t(i+1).busy <= '1';
---         rsa_t(i+1).op <= op_in;
---         rsa_t(i+1).funct3 <= funct3_in; 
---         rsa_t(i+1).funct7 <= funct7_in;
---         rsa_t(i+1).sj.so <= rs1_s;
---         rsa_t(i+1).sj.v <= rs1_v;
---         rsa_t(i+1).sk.so <= rs2_s; 
---         rsa_t(i+1).sk.v <= rs2_v;
---  
---         rsa_t(i+1).qj <= rs1_q;
---         rsa_t(i+1).qk <= rs2_q;
---         exit L1; -- This would fill up the reservation station from the top 
---      end if;
---   end loop L1;
---end if;
--- end process;
-
--- reservation_station_output : process(rsa_t)
--- begin 
---  L2 : for i in 0 to width loop
---     -- Maybe we can add a signal from alu to check if it is free - Sequetial logic again
---   if rsa_t(i+1).sj.v = '1' and rsa_t(i+1).sk.v = '1' and rsa_t(i+1).qj = zeros and rsa_t(i+1).qk = zeros and rsa_t(i+1).busy = '1' then 
---       rd1         <= rsa_t(i+1).sj.so;
---       rd2         <= rsa_t(i+1).sk.so;
---       op_out      <= rsa_t(i+1).op;
---       funct3_out  <= rsa_t(i+1).funct3;
---       funct7_out  <= rsa_t(i+1).funct7;
---       valid_out   <= '1';
---       rsa_t(i+1).busy <= '0';
---       exit L2; -- This ensures we would only would have one output, the first one from the top
---     end if;
---   end loop L2;
--- end process;
-
--- update : process (cdb_data_out,cdb_source_out,cdb_valid_out)
--- begin 
---  if cdb_valid_out = '1' then  
---    L3 : for i in 0 to width loop -- Here we want to inform every reservation station - No exit
---       if rsa_t(i+1).qj = cdb_source_out and rsa_t(i+1).busy = '1' then 
---        rsa_t(i+1).sj.so <= cdb_data_out;
---       rsa_t(i+1).sj.v <= '1';
---      rsa_t(i+1).qj <= zeros; 
---   end if; 
---  if rsa_t(i+1).qk = cdb_source_out and rsa_t(i+1).busy = '1' then 
---   rsa_t(i+1).sk.so <= cdb_data_out;
---  rsa_t(i+1).sk.v <= '1';
--- rsa_t(i+1).qk <= zeros; 
---         end if; 
---     end loop;
---   end if;
--- end process;
 
 end architecture;

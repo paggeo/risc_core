@@ -43,6 +43,7 @@ port(
   op_out      : out opcode_vector;
   funct3_out  : out funct3_vector;
   funct7_out  : out funct7_vector;
+  position_in_rsa : out integer;
   valid_out   : out std_logic
 );
 
@@ -82,7 +83,8 @@ end component;
   signal op_out   : opcode_vector := (others=>'0');
   signal funct3_out   : funct3_vector := (others=>'0');
   signal funct7_out   : funct7_vector := (others=>'0');
-	signal valid_out : std_logic := '0'; 
+  signal position_in_rsa : integer := 0;
+  signal valid_out : std_logic := '0'; 
 
   signal ip_frame : integer := 0;
 
@@ -108,6 +110,7 @@ end component;
       op_out => op_out,
       funct3_out => funct3_out,
       funct7_out => funct7_out,
+      position_in_rsa => position_in_rsa,
       valid_out => valid_out
     );
 
